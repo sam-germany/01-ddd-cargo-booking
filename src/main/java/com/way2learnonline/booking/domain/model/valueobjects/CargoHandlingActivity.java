@@ -1,10 +1,12 @@
 package com.way2learnonline.booking.domain.model.valueobjects;
 
 
-import javax.persistence.*;
-
 import com.way2learnonline.booking.domain.model.entities.Location;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.io.Serializable;
 
 /**
@@ -17,17 +19,19 @@ import java.io.Serializable;
 public class CargoHandlingActivity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Column(name = "next_expected_handling_event_type")
     private String type;
+
     @Embedded
     @AttributeOverride(name = "unLocCode", column = @Column(name = "next_expected_location_id"))
     private Location location;
+
     @Column(name = "next_expected_voyage_id")
     @AttributeOverride(name = "voyageNumber", column = @Column(name = "next_expected_voyage_id"))
     private Voyage voyage;
 
-    public CargoHandlingActivity() {
-    }
+    public CargoHandlingActivity() { }
 
     public CargoHandlingActivity(String type, Location location) {
         this.type = type;

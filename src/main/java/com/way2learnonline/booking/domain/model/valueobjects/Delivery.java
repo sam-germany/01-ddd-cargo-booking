@@ -1,10 +1,9 @@
 package com.way2learnonline.booking.domain.model.valueobjects;
 
 
-import javax.persistence.*;
-
 import com.way2learnonline.booking.domain.model.entities.Location;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -20,16 +19,20 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     @Column(name = "routing_status")
     private RoutingStatus routingStatus; //Routing Status of the Cargo
+
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_status")
     private TransportStatus transportStatus; //Transport Status of the Cargo
     //Current/PRevious information of the Cargo. Helps the operator in determining the current state is OK.
+
     @Column(name = "last_known_location_id")
     @AttributeOverride(name = "unLocCode", column = @Column(name = "last_known_location_id"))
     private Location lastKnownLocation;
+
     @Column(name = "current_voyage_number")
     @AttributeOverride(name = "voyageNumber", column = @Column(name = "current_voyage_number"))
     private Voyage currentVoyage;
+
     @Embedded
     private LastCargoHandledEvent lastEvent;
 
@@ -44,11 +47,9 @@ public class Delivery {
     }
 
     public Delivery(LastCargoHandledEvent lastEvent, CargoItinerary itinerary,
-                    RouteSpecification routeSpecification) {
+                                                    RouteSpecification routeSpecification) {
         this.lastEvent = lastEvent;
-
-        this.routingStatus = calculateRoutingStatus(itinerary,
-                routeSpecification);
+        this.routingStatus = calculateRoutingStatus(itinerary, routeSpecification);
         this.transportStatus = calculateTransportStatus();
         this.lastKnownLocation = calculateLastKnownLocation();
         this.currentVoyage = calculateCurrentVoyage();
@@ -61,9 +62,7 @@ public class Delivery {
      * the route specification or the itinerary has changed but no additional
      * handling of the cargo has been performed.
      */
-    public Delivery updateOnRouting(RouteSpecification routeSpecification,
-                             CargoItinerary itinerary) {
-
+    public Delivery updateOnRouting(RouteSpecification routeSpecification, CargoItinerary itinerary) {
 
         return new Delivery(this.lastEvent, itinerary, routeSpecification);
     }
@@ -76,7 +75,7 @@ public class Delivery {
      * @return
      */
     public static Delivery derivedFrom(RouteSpecification routeSpecification,
-                                CargoItinerary itinerary, LastCargoHandledEvent lastCargoHandledEvent) {
+                                       CargoItinerary itinerary, LastCargoHandledEvent lastCargoHandledEvent) {
 
         return new Delivery(lastCargoHandledEvent, itinerary, routeSpecification);
     }

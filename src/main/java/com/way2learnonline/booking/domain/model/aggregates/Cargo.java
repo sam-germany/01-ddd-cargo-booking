@@ -15,26 +15,33 @@ import javax.persistence.*;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Cargo.findAll",
-                query = "Select c from Cargo c"),
-        @NamedQuery(name = "Cargo.findByBookingId",
-                query = "Select c from Cargo c where c.bookingId.bookingId = :bookingId"),
-        @NamedQuery(name = "Cargo.findAllBookingIds",
-                query = "Select c.bookingId from Cargo c") })
+              @NamedQuery(name = "Cargo.findAll",
+                          query = "Select c from Cargo c"),
+              @NamedQuery(name = "Cargo.findByBookingId",
+                          query = "Select c from Cargo c where c.bookingId.bookingId = :bookingId"),
+              @NamedQuery(name = "Cargo.findAllBookingIds",
+                          query = "Select c.bookingId from Cargo c") })
 public class Cargo extends AbstractAggregateRoot<Cargo> {
+
     @Id
     @GeneratedValue
     private Long id;
+
     @Embedded
     private BookingId bookingId; // Aggregate Identifier
+
     @Embedded
     private BookingAmount bookingAmount; //Booking Amount
+
     @Embedded
     private Location origin; //Origin Location of the Cargo
+
     @Embedded
     private RouteSpecification routeSpecification; //Route Specification of the Cargo
+
     @Embedded
     private CargoItinerary itinerary; //Itinerary Assigned to the Cargo
+
     @Embedded
     private Delivery delivery; // Checks the delivery progress of the cargo against the actual Route Specification and Itinerary
 
@@ -53,10 +60,10 @@ public class Cargo extends AbstractAggregateRoot<Cargo> {
     public Cargo(BookCargoCommand bookCargoCommand){
         this.bookingId = new BookingId(bookCargoCommand.getBookingId());
         this.routeSpecification = new RouteSpecification(
-                    new Location(bookCargoCommand.getOriginLocation()),
-                    new Location(bookCargoCommand.getDestLocation()),
-                    bookCargoCommand.getDestArrivalDeadline()
-            );
+                                                          new Location(bookCargoCommand.getOriginLocation()),
+                                                          new Location(bookCargoCommand.getDestLocation()),
+                                                          bookCargoCommand.getDestArrivalDeadline()
+                                                        );
         this.origin = routeSpecification.getOrigin();
         this.itinerary = CargoItinerary.EMPTY_ITINERARY; //Empty Itinerary since the Cargo has not been routed yet
         this.bookingAmount = new BookingAmount(bookCargoCommand.getBookingAmount());
@@ -64,10 +71,10 @@ public class Cargo extends AbstractAggregateRoot<Cargo> {
                 this.itinerary, LastCargoHandledEvent.EMPTY);
 
         //Add this domain event which needs to be fired when the new cargo is saved
-        addDomainEvent(new
-                CargoBookedEvent(
-                        new CargoBookedEventData(bookingId.getBookingId())));
+        addDomainEvent(new CargoBookedEvent(
+                                            new CargoBookedEventData(bookingId.getBookingId())));
     }
+
 
     public BookingId getBookingId() {
         return bookingId;

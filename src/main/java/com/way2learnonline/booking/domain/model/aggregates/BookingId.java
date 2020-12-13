@@ -14,13 +14,13 @@ public class BookingId implements Serializable {
     @Column(name="booking_id",length = 500)
     private String bookingId;
 
-    public BookingId(){}
+    public BookingId(){}                                       // no-args constructor
 
-    public BookingId(String bookingId){
+    public BookingId(String bookingId){                        // string-args  constructor
           this.bookingId = bookingId;
     }
 
     public String getBookingId(){
                return this.bookingId;
-    }
+    }     // getter method only
 }
