@@ -1,0 +1,45 @@
+server:
+  port: 8081
+
+spring:
+ # datasource:
+  #  url: jdbc:mysql://localhost/cargotracker
+  #  username: root
+  #  password: root
+
+  cloud:
+    stream:
+      bindings:
+        cargoBookingChannel:
+          destination: cargoBookings          
+          binder: rabbit
+        cargoRoutingChannel:
+          destination: cargoRoutings         
+          binder: rabbit
+        cargoHandlingChannel:
+          destination: cargoHandling
+          group: cargoHandlingInBookingQueue
+          binder: rabbit
+      binders:
+        rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: guest
+                password: guest
+  jpa:
+    generate-ddl: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+---
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/shivaMicro?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: 1234
+
